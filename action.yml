@@ -1,0 +1,34 @@
+name: "AT - Random Number Generator"
+description: "Greets a user and generates a random number"
+author: "Antanas"
+
+inputs:
+  user-name:
+    description: "The name of the user to greet"
+    required: true
+
+outputs:
+  generated-number:
+    description: "The generated pseudo-random number (0-32767)"
+    value: ${{ steps.rng-step.outputs.random-id }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Greet User
+      shell: bash
+      env:
+        USER_NAME: ${{ inputs.user-name }}
+      run: printf 'Hello, %s!\n' "$USER_NAME"
+
+    - name: Generate Random Number
+      id: rng-step
+      shell: bash
+      run: |
+        random_value=$RANDOM
+        echo "Generated number: $random_value"
+        echo "random-id=$random_value" >> "$GITHUB_OUTPUT"
+
+branding:
+  icon: hash
+  color: green
